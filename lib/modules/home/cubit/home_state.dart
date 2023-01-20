@@ -11,3 +11,9 @@ class SelectedChoiceState extends HomeState {}
 class PickDateTimeState extends HomeState {}
 
 class ChangeIsVisibleState extends HomeState {}
+
+class GetMoviesLoading extends HomeState {}
+
+class GetMoviesSuccess extends HomeState {}
+
+class GetMoviesError extends HomeState {}

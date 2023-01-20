@@ -65,7 +65,7 @@ class MobileWelcomeScreen extends StatelessWidget {
                 children: [
                   CustomButton(
                     onPressed: () {
-                      navigateTo(context, const LoginScreen());
+                      navigateAndFinish(context, const LoginScreen());
                     },
                     fontSize: 18.sp,
                     text: 'Login',
@@ -75,7 +75,7 @@ class MobileWelcomeScreen extends StatelessWidget {
                   ),
                   CustomButton(
                     onPressed: () {
-                      navigateTo(context, const SignUpScreen());
+                      navigateAndFinish(context, const SignUpScreen());
                     },
                     fontSize: 18.sp,
                     text: 'Signup',

@@ -1,18 +1,28 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movies_app/modules/login_view/cubit/login_cubit.dart';
 import 'package:movies_app/modules/login_view/cubit/login_state.dart';
+import 'package:movies_app/shared/widgets/components.dart';
 import 'package:movies_app/shared/widgets/custom_button.dart';
 
 import '../../../shared/helper/constance.dart';
+import '../../../shared/network/local/shared_pref.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_form_field.dart';
+import '../../home/home_screen.dart';
 
 class LoginForm extends StatelessWidget {
-  const LoginForm({
+  LoginForm({
     Key? key,
   }) : super(key: key);
+
+  var formKey = GlobalKey<FormState>();
+  var usernameController = TextEditingController();
+
+  var passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +33,27 @@ class LoginForm extends StatelessWidget {
       builder: (context, state) {
         var cubit = LoginCubit.get(context);
         return Form(
+          key: formKey,
           child: Column(
             children: [
               CustomTextFormField(
-                type: null,
+                controller: usernameController,
+                type: TextInputType.text,
                 hint: 'Username',
                 prefixIcon: const Icon(Icons.person),
-                validate: (value) {},
+                validate: (value) {
+                  if (value.isEmpty) {
+                    return 'Username Required';
+                  }
+                  return null;
+                },
                 colorBorder: AppColors.secondColor,
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: defaultPadding),
                 child: CustomTextFormField(
-                  type: null,
+                  controller: passwordController,
+                  type: TextInputType.text,
                   hint: 'Password',
                   prefixIcon: const Icon(Icons.lock),
                   isPassword: cubit.isPassword,
@@ -43,14 +61,23 @@ class LoginForm extends StatelessWidget {
                   suffixIcon: cubit.suffix,
                   suffixPressed: cubit.changePasswordVisibility,
                   validate: (value) {
-                    return;
+                    if (value.isEmpty) {
+                      return 'Password Required';
+                    }
+                    return null;
                   },
                   colorBorder: AppColors.secondColor,
                 ),
               ),
               SizedBox(height: defaultPadding),
               CustomButton(
-                onPressed: () {},
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    navigateAndFinish(context, const HomeScreen());
+                    await CacheHelper.saveData(key: 'isLogin', value: true);
+                    log(isLogin.toString());
+                  }
+                },
                 fontSize: 18.sp,
                 text: 'Login',
               ),

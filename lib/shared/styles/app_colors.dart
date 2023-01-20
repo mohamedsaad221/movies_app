@@ -11,6 +11,7 @@ class AppColors {
   static const Color errorColor = Color(0xffFB2626);
   static const myWhite = Colors.white;
   static const Color myGerySecond = Color(0xffefeeee);
+  static const Color tealColor = Color(0xff007C7C);
 
   static const MaterialColor myColor = MaterialColor(
     0xFF00C569,

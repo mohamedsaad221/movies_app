@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/modules/home/home_screen.dart';
 
+import '../../shared/helper/constance.dart';
 import '../welcome/welcome_screen.dart';
 import 'cubit/control_cubit.dart';
 
@@ -15,14 +17,8 @@ class ControlView extends StatelessWidget {
       },
       builder: (context, state) {
         var controlCubit = ControlCubit.get(context);
-        return const WelcomeScreen();
+        return isLogin == false ? const WelcomeScreen() : const HomeScreen();
       },
     );
   }
 }
-
-// return uId == null
-// ? const LoginScreen()
-// : controlCubit.isOnline
-// ? const HomeLayoutScreen()
-// : const NoInternet();

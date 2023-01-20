@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movies_app/modules/home/cubit/home_cubit.dart';
 import 'package:movies_app/modules/login_view/cubit/login_cubit.dart';
+import 'package:movies_app/shared/network/remote/api_request.dart';
 import 'package:movies_app/shared/styles/app_theme.dart';
 
 import 'modules/controlView/control_view.dart';
@@ -20,6 +22,7 @@ void main() async {
     ],
   );
 
+  ApiRequest.init();
   await CacheHelper.init();
 
   BlocOverrides.runZoned(
@@ -48,6 +51,9 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider(
               create: (BuildContext context) => LoginCubit(),
+            ),
+            BlocProvider(
+              create: (BuildContext context) => HomeCubit(),
             ),
           ],
           child: BlocBuilder<ControlCubit, ControlState>(
