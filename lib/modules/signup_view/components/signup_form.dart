@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movies_app/models/user_model.dart';
+import 'package:movies_app/modules/home/home_screen.dart';
 import 'package:movies_app/modules/login_view/cubit/login_state.dart';
+import 'package:movies_app/shared/network/local/db.dart';
+import 'package:movies_app/shared/widgets/components.dart';
 import 'package:movies_app/shared/widgets/custom_button.dart';
 
 import '../../../shared/helper/constance.dart';
@@ -83,8 +87,17 @@ class SignUpForm extends StatelessWidget {
               ),
               SizedBox(height: defaultPadding / 2),
               CustomButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {}
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    await LocalDB.instance.saveUserData(
+                      userModel: UserModel(
+                        name: usernameController.text,
+                        email: emailController.text,
+                        password: passwordController.text,
+                      ),
+                    );
+                   navigateTo(context, const HomeScreen());
+                  }
                 },
                 fontSize: 18.sp,
                 text: 'Sign Up',

@@ -1,18 +1,30 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movies_app/models/user_model.dart';
 import 'package:movies_app/modules/login_view/login_screen.dart';
 import 'package:movies_app/shared/styles/app_colors.dart';
 import 'package:movies_app/shared/widgets/components.dart';
 import 'package:movies_app/shared/widgets/custom_text.dart';
 
 import '../../shared/helper/constance.dart';
+import '../../shared/network/local/shared_pref.dart';
 import 'cubit/home_cubit.dart';
 import 'cubit/home_state.dart';
 import 'movies/movies_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +72,7 @@ class HomeScreen extends StatelessWidget {
                           text: 'Go to movies',
                           textAlign: TextAlign.center,
                           textStyle: TextStyle(
-                              fontSize: 20.sp, color: AppColors.myWhite),
+                              fontSize: 20.sp, color: AppColors.myWhite,),
                         ),
                       ),
                     ),
@@ -69,8 +81,12 @@ class HomeScreen extends StatelessWidget {
                     height: defaultPadding,
                   ),
                   InkWell(
-                    onTap: () {
-                      navigateAndFinish(context, const LoginScreen());
+                    onTap: () async {
+                      await CacheHelper.removeData(key: 'isLogin');
+                      log(isLogin.toString());
+                      if(mounted) {
+                       return navigateAndFinish(context, const LoginScreen());
+                      }
                     },
                     child: Container(
                       width: double.infinity,

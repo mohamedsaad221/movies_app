@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../../modules/login_view/login_screen.dart';
-import '../network/local/shared_pref.dart';
-import '../styles/app_colors.dart';
 
 void navigateTo(context, widget) => Navigator.push(
       context,
@@ -48,20 +43,4 @@ Color chooseToastColor(ShowToastColor state) {
       break;
   }
   return color;
-}
-
-void signOut(BuildContext context) {
-  CacheHelper.removeData(key: 'uId').then((value) {
-    // FirebaseAuth.instance.currentUser!.delete().then((value) {
-    // FirebaseAuth.instance.signOut();
-    // });
-
-    navigateAndFinish(context, LoginScreen());
-  });
-
-  Widget myDivider() => Container(
-        width: double.infinity,
-        height: 1.h,
-        color: AppColors.myGery,
-      );
 }

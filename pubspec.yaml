@@ -20,9 +20,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   bloc: ^8.0.1
   flutter_bloc: ^8.0.0
-  flutter_conditional_rendering: ^2.0.0
   shared_preferences: ^2.0.11
-  fluttertoast: ^8.0.8
   connectivity: ^3.0.6
   internet_connection_checker: ^0.0.1+3
   overlay_support: ^1.2.1
@@ -32,6 +30,9 @@ dependencies:
   cached_network_image: ^3.2.2
   shimmer: ^2.0.0
   loading_animation_widget: ^1.2.0+4
+  sqflite: ^2.2.3
+  path_provider: ^2.0.11
+  fluttertoast: ^8.1.2
 
 dev_dependencies:
   flutter_test:

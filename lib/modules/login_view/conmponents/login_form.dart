@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movies_app/modules/login_view/cubit/login_cubit.dart';
 import 'package:movies_app/modules/login_view/cubit/login_state.dart';
+import 'package:movies_app/shared/network/local/db.dart';
 import 'package:movies_app/shared/widgets/components.dart';
 import 'package:movies_app/shared/widgets/custom_button.dart';
 
@@ -73,9 +74,12 @@ class LoginForm extends StatelessWidget {
               CustomButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    navigateAndFinish(context, const HomeScreen());
+                    LocalDB.instance.getLoginUser(
+                      userName: usernameController.text,
+                      passWord: passwordController.text,
+                      context: context
+                    );
                     await CacheHelper.saveData(key: 'isLogin', value: true);
-                    log(isLogin.toString());
                   }
                 },
                 fontSize: 18.sp,

@@ -17,7 +17,7 @@ class ControlView extends StatelessWidget {
       },
       builder: (context, state) {
         var controlCubit = ControlCubit.get(context);
-        return isLogin == false ? const WelcomeScreen() : const HomeScreen();
+        return isLogin == null ? const WelcomeScreen() : const HomeScreen();
       },
     );
   }
