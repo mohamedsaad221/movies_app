@@ -1,19 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movies_app/modules/login_view/cubit/login_cubit.dart';
 import 'package:movies_app/modules/login_view/cubit/login_state.dart';
-import 'package:movies_app/shared/network/local/db.dart';
-import 'package:movies_app/shared/widgets/components.dart';
 import 'package:movies_app/shared/widgets/custom_button.dart';
 
 import '../../../shared/helper/constance.dart';
 import '../../../shared/network/local/shared_pref.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_form_field.dart';
-import '../../home/home_screen.dart';
 
 class LoginForm extends StatelessWidget {
   LoginForm({
@@ -21,7 +16,7 @@ class LoginForm extends StatelessWidget {
   }) : super(key: key);
 
   var formKey = GlobalKey<FormState>();
-  var usernameController = TextEditingController();
+  var emailController = TextEditingController();
 
   var passwordController = TextEditingController();
 
@@ -38,13 +33,13 @@ class LoginForm extends StatelessWidget {
           child: Column(
             children: [
               CustomTextFormField(
-                controller: usernameController,
-                type: TextInputType.text,
-                hint: 'Username',
-                prefixIcon: const Icon(Icons.person),
+                controller: emailController,
+                type: TextInputType.emailAddress,
+                hint: 'Email',
+                prefixIcon: const Icon(Icons.email),
                 validate: (value) {
                   if (value.isEmpty) {
-                    return 'Username Required';
+                    return 'Email Required';
                   }
                   return null;
                 },
@@ -74,12 +69,14 @@ class LoginForm extends StatelessWidget {
               CustomButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    LocalDB.instance.getLoginUser(
-                      userName: usernameController.text,
-                      passWord: passwordController.text,
-                      context: context
+                    cubit.userLogin(
+                      emailController: emailController.text,
+                      passwordController: passwordController.text,
+                      context: context,
                     );
                     await CacheHelper.saveData(key: 'isLogin', value: true);
+                    await CacheHelper.saveData(
+                        key: 'email', value: emailController.text);
                   }
                 },
                 fontSize: 18.sp,

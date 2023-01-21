@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:movies_app/models/local_movie_model.dart';
+import 'package:movies_app/models/movies_model.dart';
 import 'package:movies_app/models/user_model.dart';
 import 'package:movies_app/modules/home/home_screen.dart';
 import 'package:movies_app/shared/helper/constance.dart';
@@ -36,57 +38,56 @@ class LocalDB {
 
   Future _createDB(Database db, int version) async {
     const textType = 'TEXT NOT NULL';
+    const textType2 = 'TEXT UNIQUE';
 
     await db.execute('''
     CREATE TABLE $tableUser (
     ${UserModelFields.id} INTEGER PRIMARY KEY,
-    ${UserModelFields.name} $textType,
-    ${UserModelFields.email} $textType,
+    ${UserModelFields.name} $textType ,
+    ${UserModelFields.email} $textType2,
     ${UserModelFields.password} $textType
     )
     ''');
 
-    // await db.execute('''
-    // CREATE TABLE $tableAttachAssess (
-    // ${LocalAttachmentModelFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-    // ${LocalAttachmentModelFields.userId} $intType,
-    // ${LocalAttachmentModelFields.schoolId} $intType,
-    // ${LocalAttachmentModelFields.settingKpiId} $intType,
-    // ${LocalAttachmentModelFields.attachmentName} $textType,
-    // ${LocalAttachmentModelFields.attachmentExt} $textType,
-    // ${LocalAttachmentModelFields.attachmentSize} $textType,
-    // ${LocalAttachmentModelFields.attachmentType} $textType,
-    // ${LocalAttachmentModelFields.attachmentPath} $textType,
-    // ${LocalAttachmentModelFields.uploaded} $textType
-    // )
-    // ''');
-    //
-    // await db.execute('''
-    // CREATE TABLE $tableVisitedSchools (
-    // ${LocalVisitedSchoolsFields.schoolId} INTEGER PRIMARY KEY,
-    // ${LocalVisitedSchoolsFields.schoolName} $textType,
-    // ${LocalVisitedSchoolsFields.userFullName} $textType,
-    // ${LocalVisitedSchoolsFields.locationLat} $textType,
-    // ${LocalVisitedSchoolsFields.locationLng} $textType,
-    // ${LocalVisitedSchoolsFields.visitStartDate} $textTypeNull,
-    // ${LocalVisitedSchoolsFields.visitEndDate} $textTypeNull,
-    // ${LocalVisitedSchoolsFields.creationDate} $textTypeNull,
-    // ${LocalVisitedSchoolsFields.visited} $intType,
-    // ${LocalVisitedSchoolsFields.isUploaded} $textType
-    // )
-    // ''');
+    await db.execute('''
+    CREATE TABLE $tableMovies (
+    ${LocalMovieModelFields.id} INTEGER PRIMARY KEY,
+    ${LocalMovieModelFields.name} $textType ,
+    ${LocalMovieModelFields.image} $textType,
+ 
+    )
+    ''');
   }
 
   /// working with [saveUserData] ////////////////////////////////////
-  Future<void> saveUserData({
+  Future<int> saveUserData({
     required UserModel userModel,
   }) async {
     final db = await instance.database;
-    await db.insert(
+    int result = await db.insert(
       tableUser,
       userModel.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    log("saveUserData: $result");
+    return result;
+  }
+
+  Future<void> saveAllMoviesData({
+    required List<Items> moviesList,
+  }) async {
+    final db = await instance.database;
+
+    if (moviesList.isNotEmpty) {
+      for (var movie in moviesList) {
+        int result = await db.insert(
+          tableMovies,
+          movie.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+        log("saveAllMoviesData : $result");
+      }
+    }
   }
 
   Future<List<UserModel>> getUserData() async {
@@ -105,25 +106,44 @@ class LocalDB {
           '----- maps values ${maps.map((e) => e.values).toString()} -----');
       debugPrint('----- items length ${items.length.toString()} ------');
 
+      // UserModel? userModel;
+      // for (var user in items) {
+      //   if (user.email == "hossam@kkjlk") {
+      //     // show user massege
+      //     userModel = user;
+      //     break;
+      //   }
+      // }
+      //
+      // if (userModel != null) {
+      //   // show validation
+      // } else {
+      //   //register
+      //
+      // }
+
       return items;
     } else {
       return [];
     }
   }
 
-  Future<UserModel?> getLoginUser(
-      {required String userName, required String passWord,required BuildContext context}) async {
+  Future<UserModel?> getLoginUser({
+    required String email,
+    required String passWord,
+    required BuildContext context,
+  }) async {
     final db = await instance.database;
     await db
         .rawQuery("SELECT * FROM $tableUser WHERE "
-            "${UserModelFields.name} = '$userName' And "
+            "${UserModelFields.email} = '$email' And "
             "${UserModelFields.password} = '$passWord'")
         .then((value) {
       log(value.toString());
       if (value.isEmpty) {
         showToast(
-            text: 'Confirm the mobile number or password you entered',
-            stateColor: ShowToastColor.ERROR,
+          text: 'Confirm the mobile number or password you entered',
+          stateColor: ShowToastColor.ERROR,
         );
       } else {
         navigateAndFinish(context, const HomeScreen());
@@ -135,23 +155,22 @@ class LocalDB {
     return null;
   }
 
-  // Future<LocalVisitedSchoolsModel?> getSingleVisitedSchoolsData(
-  //     int? schoolId) async {
-  //   final db = await instance.database;
-  //
-  //   List<Map<String, dynamic>> maps = await db.query(
-  //     tableVisitedSchools,
-  //     columns: LocalVisitedSchoolsFields.values,
-  //     where: '${LocalVisitedSchoolsFields.schoolId} = ?',
-  //     whereArgs: [schoolId],
-  //   );
-  //
-  //   if (maps.isNotEmpty) {
-  //     return LocalVisitedSchoolsModel.fromJson(maps.first);
-  //   }
-  //
-  //   return null;
-  // }
+  Future<UserModel?> getUser({required String email}) async {
+    final db = await instance.database;
+
+    List<Map<String, dynamic>> maps = await db.query(
+      tableUser,
+      columns: UserModelFields.values,
+      where: '${UserModelFields.email} = ?',
+      whereArgs: [email],
+    );
+
+    if (maps.isNotEmpty) {
+      return UserModel.fromJson(maps.first);
+    }
+
+    return null;
+  }
 
   // Future<int> updateVisitedSchoolData(
   //     LocalVisitedSchoolsModel localVisitedSchoolsModel) async {

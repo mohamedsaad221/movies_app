@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:movies_app/models/user_model.dart';
 import 'package:movies_app/modules/home/home_screen.dart';
 import 'package:movies_app/modules/login_view/cubit/login_state.dart';
-import 'package:movies_app/shared/network/local/db.dart';
 import 'package:movies_app/shared/widgets/components.dart';
 import 'package:movies_app/shared/widgets/custom_button.dart';
 
 import '../../../shared/helper/constance.dart';
+import '../../../shared/network/local/shared_pref.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_form_field.dart';
 import '../../login_view/cubit/login_cubit.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   SignUpForm({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
   var formKey = GlobalKey<FormState>();
+
   var usernameController = TextEditingController();
 
   var emailController = TextEditingController();
@@ -89,14 +94,16 @@ class SignUpForm extends StatelessWidget {
               CustomButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    await LocalDB.instance.saveUserData(
-                      userModel: UserModel(
-                        name: usernameController.text,
-                        email: emailController.text,
-                        password: passwordController.text,
-                      ),
+                    cubit.signup(
+                      usernameController: usernameController.text,
+                      emailController: emailController.text,
+                      passwordController: passwordController.text,
                     );
-                   navigateTo(context, const HomeScreen());
+                    await CacheHelper.saveData(key: 'isLogin', value: true);
+                    await CacheHelper.saveData(
+                        key: 'email', value: emailController.text);
+                    if (!mounted) return;
+                    navigateTo(context, const HomeScreen());
                   }
                 },
                 fontSize: 18.sp,
