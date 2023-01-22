@@ -40,100 +40,100 @@ class _HomeScreenState extends State<HomeScreen> {
         return SafeArea(
           child: Scaffold(
             body: FutureBuilder(
-              future: cubit.getUserData(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                // if (!snapshot.hasData) {
-                //   return const Center(
-                //     child: CircularProgressIndicator.adaptive(),
-                //   );
-                // } else
-                if (snapshot.hasError) {
-                  return const Center(
-                    child: Text("Error"),
-                  );
-                } else {
-                  return Padding(
-                    padding: EdgeInsets.all(defaultPadding),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            CustomText(
-                              text: 'Hi , ',
-                              textStyle: TextStyle(
-                                fontSize: 18.sp,
+                    future: cubit.getUserData(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if(snapshot.data == null && cubit.userModel == null) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text("Error"),
+                        );
+                      } else {
+                        return Padding(
+                          padding: EdgeInsets.all(defaultPadding),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  CustomText(
+                                    text: 'Hi , ',
+                                    textStyle: TextStyle(
+                                      fontSize: 18.sp,
+                                    ),
+                                  ),
+                                  CustomText(
+                                    text: cubit.userModel!.name,
+                                    textStyle: TextStyle(
+                                        fontSize: 18.sp,
+                                        color: AppColors.primaryColor),
+                                  ),
+                                ],
                               ),
-                            ),
-                            CustomText(
-                              text: cubit.userModel!.name!,
-                              textStyle: TextStyle(
-                                  fontSize: 18.sp,
-                                  color: AppColors.primaryColor),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        InkWell(
-                          onTap: () {
-                            navigateTo(context, const MoviesScreen());
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 120.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.tealColor,
-                              borderRadius:
-                                  BorderRadius.circular(defaultRadius),
-                            ),
-                            child: Center(
-                              child: CustomText(
-                                text: 'Go to movies',
-                                textAlign: TextAlign.center,
-                                textStyle: TextStyle(
-                                  fontSize: 20.sp,
-                                  color: AppColors.myWhite,
+                              const Spacer(),
+                              InkWell(
+                                onTap: () {
+                                  navigateTo(context, const MoviesScreen());
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 120.h,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.tealColor,
+                                    borderRadius:
+                                        BorderRadius.circular(defaultRadius),
+                                  ),
+                                  child: Center(
+                                    child: CustomText(
+                                      text: 'Go to movies',
+                                      textAlign: TextAlign.center,
+                                      textStyle: TextStyle(
+                                        fontSize: 20.sp,
+                                        color: AppColors.myWhite,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: defaultPadding,
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            await CacheHelper.removeData(key: 'isLogin');
-                            log(isLogin.toString());
-                            if (mounted) {
-                              return navigateAndFinish(
-                                  context, const LoginScreen());
-                            }
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 120.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.errorColor.withOpacity(.8),
-                              borderRadius:
-                                  BorderRadius.circular(defaultRadius),
-                            ),
-                            child: Center(
-                              child: CustomText(
-                                text: 'Sign Out',
-                                textAlign: TextAlign.center,
-                                textStyle: TextStyle(
-                                    fontSize: 20.sp, color: AppColors.myWhite),
+                              SizedBox(
+                                height: defaultPadding,
                               ),
-                            ),
+                              InkWell(
+                                onTap: () async {
+                                  await CacheHelper.removeData(key: 'isLogin');
+                                  log(isLogin.toString());
+                                  if (mounted) {
+                                    return navigateAndFinish(
+                                        context, const LoginScreen());
+                                  }
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 120.h,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.errorColor.withOpacity(.8),
+                                    borderRadius:
+                                        BorderRadius.circular(defaultRadius),
+                                  ),
+                                  child: Center(
+                                    child: CustomText(
+                                      text: 'Sign Out',
+                                      textAlign: TextAlign.center,
+                                      textStyle: TextStyle(
+                                          fontSize: 20.sp,
+                                          color: AppColors.myWhite),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                            ],
                           ),
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                  );
-                }
-              },
-            ),
+                        );
+                      }
+                    },
+                  )
           ),
         );
       },

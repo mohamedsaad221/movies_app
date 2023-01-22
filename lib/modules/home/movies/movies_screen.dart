@@ -10,6 +10,7 @@ import 'package:movies_app/shared/widgets/custom_text.dart';
 import '../../../shared/helper/constance.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/default_cached_image.dart';
+import '../../controlView/cubit/control_cubit.dart';
 
 class MoviesScreen extends StatefulWidget {
   const MoviesScreen({Key? key}) : super(key: key);
@@ -22,7 +23,12 @@ class _MoviesScreenState extends State<MoviesScreen> {
   bool isLoading = true;
 
   Future<void> init() async {
-    await BlocProvider.of<HomeCubit>(context).getMovies();
+
+      if(BlocProvider.of<ControlCubit>(context).isOnline == true){
+        await BlocProvider.of<HomeCubit>(context).getMovies();
+      } else {
+       await BlocProvider.of<HomeCubit>(context).getAllMoviesLocal();
+      }
 
     isLoading = false;
   }
@@ -66,9 +72,10 @@ class _MoviesScreenState extends State<MoviesScreen> {
                               crossAxisSpacing: 18,
                               childAspectRatio: 1.3.w / 2.2.h,
                               children: List.generate(
-                                cubit.moviesModel!.items!.length,
+                                cubit.moviesList.length,
                                 (index) => buildMovieItem(
-                                    movie: cubit.moviesModel!.items![index]),
+                                  index: index,
+                                    movie: cubit.moviesList[index]),
                               ),
                             )
                           : Center(
@@ -94,7 +101,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 
-  Widget buildMovieItem({required Items movie}) {
+  Widget buildMovieItem({required MoviesModelData movie,required int index}) {
     return Column(
       children: [
         DefaultCachedNetworkImage(
@@ -115,7 +122,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
             padding: EdgeInsets.symmetric(
                 vertical: defaultPadding / 2, horizontal: 4.w),
             child: CustomText(
-              text: movie.fullTitle,
+              text: movie.name!,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               textStyle: TextStyle(fontSize: 16.sp, color: AppColors.myBlack),

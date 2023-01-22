@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:movies_app/models/local_movie_model.dart';
 import 'package:movies_app/models/movies_model.dart';
 import 'package:movies_app/models/user_model.dart';
 import 'package:movies_app/modules/home/home_screen.dart';
@@ -53,7 +52,7 @@ class LocalDB {
     CREATE TABLE $tableMovies (
     ${LocalMovieModelFields.id} INTEGER PRIMARY KEY,
     ${LocalMovieModelFields.name} $textType ,
-    ${LocalMovieModelFields.image} $textType,
+    ${LocalMovieModelFields.image} $textType
  
     )
     ''');
@@ -74,20 +73,15 @@ class LocalDB {
   }
 
   Future<void> saveAllMoviesData({
-    required List<Items> moviesList,
+    required MoviesModelData localMovieModel,
   }) async {
     final db = await instance.database;
-
-    if (moviesList.isNotEmpty) {
-      for (var movie in moviesList) {
         int result = await db.insert(
           tableMovies,
-          movie.toJson(),
+          localMovieModel.toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
         log("saveAllMoviesData : $result");
-      }
-    }
   }
 
   Future<List<UserModel>> getUserData() async {
@@ -106,27 +100,35 @@ class LocalDB {
           '----- maps values ${maps.map((e) => e.values).toString()} -----');
       debugPrint('----- items length ${items.length.toString()} ------');
 
-      // UserModel? userModel;
-      // for (var user in items) {
-      //   if (user.email == "hossam@kkjlk") {
-      //     // show user massege
-      //     userModel = user;
-      //     break;
-      //   }
-      // }
-      //
-      // if (userModel != null) {
-      //   // show validation
-      // } else {
-      //   //register
-      //
-      // }
+      return items;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<MoviesModel>> getAllMoviesLocal() async {
+    final db = await instance.database;
+
+    List<Map<String, dynamic>> maps = await db.query(
+      tableMovies,
+      columns: LocalMovieModelFields.values,
+    );
+
+    if (maps.isNotEmpty) {
+      List<MoviesModel> items =
+      maps.map((element) => MoviesModel.fromJson(element)).toList();
+
+      debugPrint(
+          '----- maps values movie ${maps.map((e) => e.values).toString()} -----');
+      debugPrint('----- items movie length ${items.length.toString()} ------');
 
       return items;
     } else {
       return [];
     }
   }
+
+
 
   Future<UserModel?> getLoginUser({
     required String email,
@@ -170,118 +172,5 @@ class LocalDB {
     }
 
     return null;
-  }
-
-  // Future<int> updateVisitedSchoolData(
-  //     LocalVisitedSchoolsModel localVisitedSchoolsModel) async {
-  //   final db = await instance.database;
-  //
-  //   return await db.update(
-  //     tableVisitedSchools,
-  //     localVisitedSchoolsModel.toJson(),
-  //     where: '${LocalVisitedSchoolsFields.schoolId} = ?',
-  //     whereArgs: [localVisitedSchoolsModel.schoolId],
-  //   );
-  // }
-
-  // /// working with [saveVisitAssessData] ///////////////////////////////////////
-  // Future<void> saveVisitAssessData({
-  //   required LocalVisitAssessModel localVisitAssessModel,
-  //   required String schoolId,
-  // }) async {
-  //   List<LocalVisitAssessModel> list = await getVisitAssessData();
-  //
-  //   if (list.isNotEmpty) {
-  //     for (var item in list) {
-  //       if (item.settingKpiId == localVisitAssessModel.settingKpiId) {
-  //         int updateCode = await updateAssesData(localVisitAssessModel);
-  //
-  //         if (updateCode == 1) {
-  //           debugPrint('----- updateCode: $updateCode -----');
-  //           debugPrint('----- تم تعديل المعيار -----');
-  //           showToast(
-  //               text: 'تم تعديل المعيار', stateColor: ShowToastColor.success);
-  //         } else {
-  //           debugPrint('----- updateCode: $updateCode -----');
-  //         }
-  //       }
-  //     }
-  //
-  //     final db = await instance.database;
-  //     await db
-  //         .insert(
-  //       tableVisitAssess,
-  //       localVisitAssessModel.toJson(),
-  //     )
-  //         .then((value) {
-  //       debugPrint('----- تم حفظ المعيار -----');
-  //       showToast(text: 'تم حفظ المعيار', stateColor: ShowToastColor.success);
-  //     });
-  //   } else {
-  //     final db = await instance.database;
-  //     await db
-  //         .insert(
-  //       tableVisitAssess,
-  //       localVisitAssessModel.toJson(),
-  //     )
-  //         .then((value) {
-  //       debugPrint('----- تم حفظ المعيار -----');
-  //       showToast(text: 'تم حفظ المعيار', stateColor: ShowToastColor.success);
-  //     });
-  //   }
-  // }
-  //
-  // Future<List<LocalVisitAssessModel>> getVisitAssessData() async {
-  //   final db = await instance.database;
-  //
-  //   List<Map<String, dynamic>> maps = await db.query(
-  //     tableVisitAssess,
-  //     columns: LocalVisitAssessModelFields.values,
-  //   );
-  //
-  //   if (maps.isNotEmpty) {
-  //     List<LocalVisitAssessModel> items = maps
-  //         .map((element) => LocalVisitAssessModel.fromJson(element))
-  //         .toList();
-  //
-  //     debugPrint(
-  //         '----- maps values ${maps.map((e) => e.values).toString()} -----');
-  //     debugPrint('----- items length ${items.length.toString()} ------');
-  //
-  //     return items;
-  //   } else {
-  //     return [];
-  //   }
-  // }
-  //
-  // Future<List<LocalAttachmentModel>> getVisitAttachData() async {
-  //   final db = await instance.database;
-  //
-  //   List<Map<String, dynamic>> maps = await db.query(
-  //     tableAttachAssess,
-  //     columns: LocalAttachmentModelFields.values,
-  //     // where: '${LocalAttachmentModelFields.schoolId} = ?',
-  //     // whereArgs: [schoolId],
-  //   );
-  //
-  //   if (maps.isNotEmpty) {
-  //     List<LocalAttachmentModel> items = maps
-  //         .map((element) => LocalAttachmentModel.fromJson(element))
-  //         .toList();
-  //
-  //     debugPrint(
-  //         '----- maps values ${maps.map((e) => e.values).toString()} -----');
-  //     debugPrint('----- items length ${items.length.toString()} ------');
-  //
-  //     return items;
-  //   } else {
-  //     return [];
-  //   }
-  // }
-
-  /// working with [closeDB] //////////////////////////////////////
-  Future closeDB() async {
-    final db = await instance.database;
-    db.close();
   }
 }

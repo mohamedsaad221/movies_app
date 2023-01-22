@@ -17,3 +17,5 @@ class GetMoviesLoading extends HomeState {}
 class GetMoviesSuccess extends HomeState {}
 
 class GetMoviesError extends HomeState {}
+
+class ControlConnectionSuccess extends HomeState {}

@@ -6,6 +6,7 @@ import 'package:movies_app/modules/login_view/cubit/login_state.dart';
 import 'package:movies_app/shared/widgets/components.dart';
 import 'package:movies_app/shared/widgets/custom_button.dart';
 
+import '../../../models/user_model.dart';
 import '../../../shared/helper/constance.dart';
 import '../../../shared/network/local/shared_pref.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -94,16 +95,28 @@ class _SignUpFormState extends State<SignUpForm> {
               CustomButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    cubit.signup(
-                      usernameController: usernameController.text,
-                      emailController: emailController.text,
-                      passwordController: passwordController.text,
-                    );
+                    List<UserModel> items = await cubit.getAllUsers();
+
+                    UserModel? userModel;
+                    for (var user in items) {
+                      if (user.email == emailController.text) {
+                        showToast(text: 'The email already exists', stateColor: ShowToastColor.ERROR);
+                        userModel = user;
+                        break;
+                      }
+                    }
+                    if (userModel == null) {
+                      cubit.signup(
+                        usernameController: usernameController.text,
+                        emailController: emailController.text,
+                        passwordController: passwordController.text,
+                      );
+                    }
                     await CacheHelper.saveData(key: 'isLogin', value: true);
                     await CacheHelper.saveData(
                         key: 'email', value: emailController.text);
                     if (!mounted) return;
-                    navigateTo(context, const HomeScreen());
+                   navigateAndFinish(context, const HomeScreen());
                   }
                 },
                 fontSize: 18.sp,

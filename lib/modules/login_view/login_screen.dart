@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/modules/signup_view/signup_screen.dart';
+import 'package:movies_app/shared/widgets/already_have_an_account.dart';
+import 'package:movies_app/shared/widgets/components.dart';
 
 import '../../shared/responsive/responsive_widget.dart';
 import '../../shared/widgets/background.dart';
@@ -57,8 +60,12 @@ class MobileLoginScreen extends StatelessWidget {
               child: LoginForm(),
             ),
             const Spacer(),
+
           ],
         ),
+        AlreadyHaveAnAccountCheck(press:(){
+          navigateTo(context, const SignUpScreen());
+        } ,login: true,),
       ],
     );
   }

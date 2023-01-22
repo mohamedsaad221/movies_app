@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movies_app/modules/login_view/login_screen.dart';
 
 import '../../shared/helper/constance.dart';
 import '../../shared/responsive/responsive_widget.dart';
+import '../../shared/widgets/already_have_an_account.dart';
 import '../../shared/widgets/background.dart';
+import '../../shared/widgets/components.dart';
 import 'components/sign_up_image.dart';
 import 'components/signup_form.dart';
 
@@ -63,6 +66,9 @@ class MobileSignupScreen extends StatelessWidget {
             const Spacer(),
           ],
         ),
+        AlreadyHaveAnAccountCheck(press:(){
+          navigateTo(context, const LoginScreen());
+        } ,login: false,),
         // const SocalSignUp()
       ],
     );

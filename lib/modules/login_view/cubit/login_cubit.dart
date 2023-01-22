@@ -51,4 +51,9 @@ class LoginCubit extends Cubit<LoginState> {
     );
     emit(SignUpStateSuccess());
   }
+
+  Future<List<UserModel>> getAllUsers() async {
+    List<UserModel> items = await LocalDB.instance.getUserData();
+    return items;
+  }
 }

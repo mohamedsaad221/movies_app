@@ -11,17 +11,17 @@ class MoviesModel {
     if (json['items'] != null) {
       items = [];
       json['items'].forEach((v) {
-        items?.add(Items.fromJson(v));
+        items?.add(MoviesModelData.fromJson(v));
       });
     }
     errorMessage = json['errorMessage'];
   }
 
-  List<Items>? items;
+  List<MoviesModelData>? items;
   String? errorMessage;
 
   MoviesModel copyWith({
-    List<Items>? items,
+    List<MoviesModelData>? items,
     String? errorMessage,
   }) =>
       MoviesModel(
@@ -49,82 +49,38 @@ class MoviesModel {
 /// crew : "Scott Cooper (dir.), Christian Bale, Harry Melling"
 /// imDbRating : "6.7"
 /// imDbRatingCount : "55907"
+///
 
-class Items {
-  Items({
+class LocalMovieModelFields {
+  static final List<String> values = [id, name, image];
+
+  static const String id = 'id';
+  static const String name = 'fullTitle';
+  static const String image = 'image';
+}
+
+class MoviesModelData {
+  MoviesModelData({
     this.id,
-    this.rank,
-    this.rankUpDown,
-    this.title,
-    this.fullTitle,
-    this.year,
+    this.name,
     this.image,
-    this.crew,
-    this.imDbRating,
-    this.imDbRatingCount,
   });
 
-  Items.fromJson(dynamic json) {
+  MoviesModelData.fromJson(dynamic json) {
     id = json['id'];
-    rank = json['rank'];
-    rankUpDown = json['rankUpDown'];
-    title = json['title'];
-    fullTitle = json['fullTitle'];
-    year = json['year'];
+    name = json['fullTitle'];
     image = json['image'];
-    crew = json['crew'];
-    imDbRating = json['imDbRating'];
-    imDbRatingCount = json['imDbRatingCount'];
   }
 
   String? id;
-  String? rank;
-  String? rankUpDown;
-  String? title;
-  String? fullTitle;
-  String? year;
+  String? name;
   String? image;
-  String? crew;
-  String? imDbRating;
-  String? imDbRatingCount;
-
-  Items copyWith({
-    String? id,
-    String? rank,
-    String? rankUpDown,
-    String? title,
-    String? fullTitle,
-    String? year,
-    String? image,
-    String? crew,
-    String? imDbRating,
-    String? imDbRatingCount,
-  }) =>
-      Items(
-        id: id ?? this.id,
-        rank: rank ?? this.rank,
-        rankUpDown: rankUpDown ?? this.rankUpDown,
-        title: title ?? this.title,
-        fullTitle: fullTitle ?? this.fullTitle,
-        year: year ?? this.year,
-        image: image ?? this.image,
-        crew: crew ?? this.crew,
-        imDbRating: imDbRating ?? this.imDbRating,
-        imDbRatingCount: imDbRatingCount ?? this.imDbRatingCount,
-      );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['rank'] = rank;
-    map['rankUpDown'] = rankUpDown;
-    map['title'] = title;
-    map['fullTitle'] = fullTitle;
-    map['year'] = year;
+    map['fullTitle'] = name;
     map['image'] = image;
-    map['crew'] = crew;
-    map['imDbRating'] = imDbRating;
-    map['imDbRatingCount'] = imDbRatingCount;
     return map;
   }
 }
