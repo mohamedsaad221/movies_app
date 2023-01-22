@@ -121,9 +121,9 @@ class LocalDB {
       List<MoviesModelData> items =
           maps.map((element) => MoviesModelData.fromJson(element)).toList();
 
-      debugPrint(
-          '----- maps values movie ${maps.map((e) => e.values).toString()} -----');
-      debugPrint('----- items movie length ${items.length.toString()} ------');
+      // debugPrint(
+      //     '----- maps values movie ${maps.map((e) => e.values).toString()} -----');
+      // debugPrint('----- items movie length ${items.length.toString()} ------');
 
       return items;
     } else {

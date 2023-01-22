@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +25,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
   bool isLoading = true;
 
   Future<void> init() async {
+    await BlocProvider.of<ControlCubit>(context).startMonitoring();
     if (BlocProvider.of<ControlCubit>(context).isOnline) {
       await BlocProvider.of<HomeCubit>(context).getMovies();
     } else {
@@ -30,6 +33,8 @@ class _MoviesScreenState extends State<MoviesScreen> {
     }
 
     isLoading = false;
+
+    log('isonline ${BlocProvider.of<ControlCubit>(context).isOnline}');
   }
 
   @override
@@ -61,32 +66,20 @@ class _MoviesScreenState extends State<MoviesScreen> {
               child: Column(
                 children: [
                   !isLoading
-                      ? cubit.moviesModel != null
-                          ? GridView.count(
-                              crossAxisCount: 2,
-                              shrinkWrap: true,
-                              clipBehavior: Clip.none,
-                              physics: const NeverScrollableScrollPhysics(),
-                              mainAxisSpacing: 18,
-                              crossAxisSpacing: 18,
-                              childAspectRatio: 1.3.w / 2.2.h,
-                              children: List.generate(
-                                cubit.moviesList.length,
-                                (index) => buildMovieItem(
-                                    index: index,
-                                    movie: cubit.moviesList[index]),
-                              ),
-                            )
-                          : Center(
-                              child: CustomText(
-                                text:
-                                    'something went wrong! , please try again',
-                                textStyle: TextStyle(
-                                  fontSize: 18.sp,
-                                  color: AppColors.errorColor,
-                                ),
-                              ),
-                            )
+                      ? GridView.count(
+                          crossAxisCount: 2,
+                          shrinkWrap: true,
+                          clipBehavior: Clip.none,
+                          physics: const NeverScrollableScrollPhysics(),
+                          mainAxisSpacing: 18,
+                          crossAxisSpacing: 18,
+                          childAspectRatio: 1.3.w / 2.2.h,
+                          children: List.generate(
+                            cubit.moviesList.length,
+                            (index) => buildMovieItem(
+                                index: index, movie: cubit.moviesList[index]),
+                          ),
+                        )
                       : Center(
                           child: LoadingAnimationWidget.discreteCircle(
                               color: AppColors.primaryColor, size: 40.w),

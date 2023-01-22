@@ -31,7 +31,7 @@ class HomeCubit extends Cubit<HomeState> {
       moviesList = moviesLocalLength;
       log('moviesLocalLength:${moviesLocalLength.length}');
     }
-    log('here');
+    emit(GetMoviesLocalState());
   }
 
   Future<void> getMovies() async {
@@ -64,8 +64,8 @@ class HomeCubit extends Cubit<HomeState> {
 
       emit(GetMoviesSuccess());
     } on DioError catch (error) {
-      log('message: ${error.response!.statusMessage}');
-      log('message: ${error.response!.statusCode}');
+      log('message: ${error.response?.statusMessage}');
+      //log('message: ${error.response!.statusCode}');
 
       emit(GetMoviesError());
     }
