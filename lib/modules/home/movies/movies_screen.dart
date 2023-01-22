@@ -23,12 +23,11 @@ class _MoviesScreenState extends State<MoviesScreen> {
   bool isLoading = true;
 
   Future<void> init() async {
-
-      if(BlocProvider.of<ControlCubit>(context).isOnline == true){
-        await BlocProvider.of<HomeCubit>(context).getMovies();
-      } else {
-       await BlocProvider.of<HomeCubit>(context).getAllMoviesLocal();
-      }
+    if (BlocProvider.of<ControlCubit>(context).isOnline) {
+      await BlocProvider.of<HomeCubit>(context).getMovies();
+    } else {
+      await BlocProvider.of<HomeCubit>(context).getAllMoviesLocal();
+    }
 
     isLoading = false;
   }
@@ -74,7 +73,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                               children: List.generate(
                                 cubit.moviesList.length,
                                 (index) => buildMovieItem(
-                                  index: index,
+                                    index: index,
                                     movie: cubit.moviesList[index]),
                               ),
                             )
@@ -101,7 +100,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 
-  Widget buildMovieItem({required MoviesModelData movie,required int index}) {
+  Widget buildMovieItem({required MoviesModelData movie, required int index}) {
     return Column(
       children: [
         DefaultCachedNetworkImage(

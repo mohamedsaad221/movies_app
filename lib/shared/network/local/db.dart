@@ -5,6 +5,7 @@ import 'package:movies_app/models/movies_model.dart';
 import 'package:movies_app/models/user_model.dart';
 import 'package:movies_app/modules/home/home_screen.dart';
 import 'package:movies_app/shared/helper/constance.dart';
+import 'package:movies_app/shared/network/local/shared_pref.dart';
 import 'package:movies_app/shared/widgets/components.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -16,7 +17,7 @@ class LocalDB {
 
   LocalDB._init();
 
-  static const _dbName = 'movie.db';
+  static const _dbName = 'movieDb.db';
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -56,6 +57,8 @@ class LocalDB {
  
     )
     ''');
+
+    log('create tables');
   }
 
   /// working with [saveUserData] ////////////////////////////////////
@@ -76,12 +79,12 @@ class LocalDB {
     required MoviesModelData localMovieModel,
   }) async {
     final db = await instance.database;
-        int result = await db.insert(
-          tableMovies,
-          localMovieModel.toJson(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-        log("saveAllMoviesData : $result");
+    int result = await db.insert(
+      tableMovies,
+      localMovieModel.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    // log("saveAllMoviesData : $result");
   }
 
   Future<List<UserModel>> getUserData() async {
@@ -106,7 +109,7 @@ class LocalDB {
     }
   }
 
-  Future<List<MoviesModel>> getAllMoviesLocal() async {
+  Future<List<MoviesModelData>> getAllMoviesLocal() async {
     final db = await instance.database;
 
     List<Map<String, dynamic>> maps = await db.query(
@@ -115,8 +118,8 @@ class LocalDB {
     );
 
     if (maps.isNotEmpty) {
-      List<MoviesModel> items =
-      maps.map((element) => MoviesModel.fromJson(element)).toList();
+      List<MoviesModelData> items =
+          maps.map((element) => MoviesModelData.fromJson(element)).toList();
 
       debugPrint(
           '----- maps values movie ${maps.map((e) => e.values).toString()} -----');
@@ -128,33 +131,32 @@ class LocalDB {
     }
   }
 
-
-
-  Future<UserModel?> getLoginUser({
+  Future<void> getLoginUser({
     required String email,
     required String passWord,
     required BuildContext context,
   }) async {
-    final db = await instance.database;
-    await db
-        .rawQuery("SELECT * FROM $tableUser WHERE "
-            "${UserModelFields.email} = '$email' And "
-            "${UserModelFields.password} = '$passWord'")
-        .then((value) {
-      log(value.toString());
-      if (value.isEmpty) {
+    try {
+      final db = await instance.database;
+      List<Map<String, Object?>> result =
+          await db.rawQuery("SELECT * FROM $tableUser WHERE "
+              "${UserModelFields.email} = '$email' And "
+              "${UserModelFields.password} = '$passWord'");
+
+      if (result.isEmpty) {
         showToast(
           text: 'Confirm the mobile number or password you entered',
           stateColor: ShowToastColor.ERROR,
         );
       } else {
+        log(result.toString());
+        await CacheHelper.saveData(key: 'isLogin', value: true);
+        await CacheHelper.saveData(key: 'email', value: email);
         navigateAndFinish(context, const HomeScreen());
       }
-    }).catchError((error) {
+    } on Exception catch (error) {
       log(error.toString());
-    });
-
-    return null;
+    }
   }
 
   Future<UserModel?> getUser({required String email}) async {

@@ -100,7 +100,9 @@ class _SignUpFormState extends State<SignUpForm> {
                     UserModel? userModel;
                     for (var user in items) {
                       if (user.email == emailController.text) {
-                        showToast(text: 'The email already exists', stateColor: ShowToastColor.ERROR);
+                        showToast(
+                            text: 'The email already exists',
+                            stateColor: ShowToastColor.ERROR);
                         userModel = user;
                         break;
                       }
@@ -111,12 +113,12 @@ class _SignUpFormState extends State<SignUpForm> {
                         emailController: emailController.text,
                         passwordController: passwordController.text,
                       );
+                      await CacheHelper.saveData(key: 'isLogin', value: true);
+                      await CacheHelper.saveData(
+                          key: 'email', value: emailController.text);
+                      if (!mounted) return;
+                      navigateAndFinish(context, const HomeScreen());
                     }
-                    await CacheHelper.saveData(key: 'isLogin', value: true);
-                    await CacheHelper.saveData(
-                        key: 'email', value: emailController.text);
-                    if (!mounted) return;
-                   navigateAndFinish(context, const HomeScreen());
                   }
                 },
                 fontSize: 18.sp,

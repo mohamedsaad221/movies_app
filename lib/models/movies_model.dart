@@ -67,12 +67,12 @@ class MoviesModelData {
   });
 
   MoviesModelData.fromJson(dynamic json) {
-    id = json['id'];
+    id = int.tryParse(json['id'].toString());
     name = json['fullTitle'];
     image = json['image'];
   }
 
-  String? id;
+  int? id;
   String? name;
   String? image;
 

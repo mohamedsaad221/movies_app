@@ -2,12 +2,11 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:movies_app/shared/helper/constance.dart';
 import 'package:movies_app/shared/helper/end_points.dart';
 import 'package:movies_app/shared/network/local/shared_pref.dart';
+
 import '../../../models/movies_model.dart';
 import '../../../models/user_model.dart';
 import '../../../shared/network/local/db.dart';
@@ -19,19 +18,17 @@ class HomeCubit extends Cubit<HomeState> {
 
   static HomeCubit get(context) => BlocProvider.of(context);
 
-
   // get movies
 
-  List<MoviesModel> moviesLocalLength = [];
+  List<MoviesModelData> moviesLocalLength = [];
 
   MoviesModel? moviesModel;
   List<MoviesModelData> moviesList = [];
 
-
   Future<void> getAllMoviesLocal() async {
     moviesLocalLength = await LocalDB.instance.getAllMoviesLocal();
-    if(moviesLocalLength.isNotEmpty){
-     // moviesList = moviesLocalLength;
+    if (moviesLocalLength.isNotEmpty) {
+      moviesList = moviesLocalLength;
       log('moviesLocalLength:${moviesLocalLength.length}');
     }
     log('here');
@@ -47,22 +44,19 @@ class HomeCubit extends Cubit<HomeState> {
       );
       moviesModel = MoviesModel.fromJson(response.data);
 
-      if(moviesModel !=null) {
-       await getAllMoviesLocal();
+      if (moviesModel != null) {
+        await getAllMoviesLocal();
       }
 
       log('get all movie: ${moviesLocalLength.length}');
 
-      moviesList = moviesModel!.items! ;
+      moviesList = moviesModel!.items!;
 
-       if(moviesModel!.items!.length > moviesLocalLength.length) {
+      if (moviesModel!.items!.length > moviesLocalLength.length) {
         for (var movie in moviesModel!.items!) {
           LocalDB.instance.saveAllMoviesData(
-              localMovieModel: MoviesModelData(
-                  name: movie.name!,
-                  image: movie.image!
-              )
-          );
+              localMovieModel:
+                  MoviesModelData(name: movie.name!, image: movie.image!));
         }
       }
 
