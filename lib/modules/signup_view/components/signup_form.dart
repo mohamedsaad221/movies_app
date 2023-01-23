@@ -112,16 +112,13 @@ class _SignUpFormState extends State<SignUpForm> {
                         usernameController: usernameController.text,
                         emailController: emailController.text,
                         passwordController: passwordController.text,
+                        context: context,
+                        mounted: mounted
                       );
-                      await CacheHelper.saveData(key: 'isLogin', value: true);
-                      await CacheHelper.saveData(
-                          key: 'email', value: emailController.text);
-                      if (!mounted) return;
-                      navigateAndFinish(context, const HomeScreen());
                     }
                   }
                 },
-                fontSize: 18.sp,
+                fontSize: defaultFontSize,
                 text: 'Sign Up',
               ),
               SizedBox(height: defaultPadding),

@@ -39,102 +39,164 @@ class _HomeScreenState extends State<HomeScreen> {
         var cubit = HomeCubit.get(context);
         return SafeArea(
           child: Scaffold(
-            body: FutureBuilder(
-                    future: cubit.getUserData(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      if(snapshot.data == null && cubit.userModel == null) {
-                        return const CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return const Center(
-                          child: Text("Error"),
-                        );
-                      } else {
-                        return Padding(
-                          padding: EdgeInsets.all(defaultPadding),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  CustomText(
-                                    text: 'Hi , ',
-                                    textStyle: TextStyle(
-                                      fontSize: 18.sp,
-                                    ),
-                                  ),
-                                  CustomText(
-                                    text: cubit.userModel!.name,
-                                    textStyle: TextStyle(
-                                        fontSize: 18.sp,
-                                        color: AppColors.primaryColor),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              InkWell(
-                                onTap: () {
-                                  navigateTo(context, const MoviesScreen());
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 120.h,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.tealColor,
-                                    borderRadius:
-                                        BorderRadius.circular(defaultRadius),
-                                  ),
-                                  child: Center(
-                                    child: CustomText(
-                                      text: 'Go to movies',
-                                      textAlign: TextAlign.center,
-                                      textStyle: TextStyle(
-                                        fontSize: 20.sp,
-                                        color: AppColors.myWhite,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: defaultPadding,
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  await CacheHelper.removeData(key: 'isLogin');
-                                  log(isLogin.toString());
-                                  if (mounted) {
-                                    return navigateAndFinish(
-                                        context, const LoginScreen());
-                                  }
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 120.h,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.errorColor.withOpacity(.8),
-                                    borderRadius:
-                                        BorderRadius.circular(defaultRadius),
-                                  ),
-                                  child: Center(
-                                    child: CustomText(
-                                      text: 'Sign Out',
-                                      textAlign: TextAlign.center,
-                                      textStyle: TextStyle(
-                                          fontSize: 20.sp,
-                                          color: AppColors.myWhite),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                            ],
+              body: FutureBuilder(
+            future: cubit.getUserData(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.data == null && cubit.userModel == null) {
+                return const CircularProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text("Error"),
+                );
+              } else {
+                return Padding(
+                  padding: EdgeInsets.all(defaultPadding),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          CustomText(
+                            text: 'Hi , ',
+                            textStyle: TextStyle(
+                              fontSize: defaultFontSize,
+                            ),
                           ),
-                        );
-                      }
-                    },
-                  )
-          ),
+                          CustomText(
+                            text: cubit.userModel!.name,
+                            textStyle: TextStyle(
+                                fontSize: defaultFontSize,
+                                color: AppColors.primaryColor),
+                          ),
+                          const Spacer(),
+                          InkWell(
+                            onTap: () async {
+                              showDialog(
+                                context: context,
+                                builder: (_) => SizedBox(
+                                  width: 271.w,
+                                  height: 164.h,
+                                  child: AlertDialog(
+                                    content: CustomText(
+                                      textAlign: TextAlign.center,
+                                      text: 'Are you sure to log out ?',
+                                      textStyle: TextStyle(
+                                          fontSize: 16.sp,
+                                          height: 1.2,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              await CacheHelper.removeData(
+                                                  key: 'isLogin');
+                                              log(isLogin.toString());
+                                              if (mounted) {
+                                                return navigateAndFinish(
+                                                    context,
+                                                    const LoginScreen());
+                                              }
+                                              Navigator.pop(context);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                CustomText(
+                                                  text: 'Yes',
+                                                  textStyle: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                SizedBox(
+                                                  width: 8.w,
+                                                ),
+                                                const Icon(
+                                                  Icons.check,
+                                                  color: AppColors.primaryColor,
+                                                  size: 30,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                CustomText(
+                                                  text: 'No',
+                                                  textStyle: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                SizedBox(
+                                                  width: 8.w,
+                                                ),
+                                                const Icon(
+                                                  Icons.close,
+                                                  color: AppColors.primaryColor,
+                                                  size: 30,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Icon(
+                              Icons.exit_to_app,
+                              size: 25.w,
+                              color: AppColors.errorColor,
+                            ),
+                          )
+                        ],
+                      ),
+                      const Spacer(),
+                      InkWell(
+                        onTap: () {
+                          navigateTo(context, const MoviesScreen());
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 120.h,
+                          decoration: BoxDecoration(
+                            color: AppColors.tealColor,
+                            borderRadius: BorderRadius.circular(defaultRadius),
+                          ),
+                          child: Center(
+                            child: CustomText(
+                              text: 'Go to movies',
+                              textAlign: TextAlign.center,
+                              textStyle: TextStyle(
+                                fontSize: 20.sp,
+                                color: AppColors.myWhite,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                        height: defaultPadding,
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          )),
         );
       },
     );

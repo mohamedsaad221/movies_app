@@ -84,7 +84,7 @@ class LocalDB {
       localMovieModel.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    // log("saveAllMoviesData : $result");
+    log("saveAllMoviesData : $result");
   }
 
   Future<List<UserModel>> getUserData() async {
@@ -135,6 +135,7 @@ class LocalDB {
     required String email,
     required String passWord,
     required BuildContext context,
+    required bool mounted,
   }) async {
     try {
       final db = await instance.database;
@@ -145,13 +146,14 @@ class LocalDB {
 
       if (result.isEmpty) {
         showToast(
-          text: 'Confirm the mobile number or password you entered',
+          text: 'We couldn\'t find an account that matched what you entered',
           stateColor: ShowToastColor.ERROR,
         );
       } else {
         log(result.toString());
         await CacheHelper.saveData(key: 'isLogin', value: true);
         await CacheHelper.saveData(key: 'email', value: email);
+        if(!mounted) return;
         navigateAndFinish(context, const HomeScreen());
       }
     } on Exception catch (error) {

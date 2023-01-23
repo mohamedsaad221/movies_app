@@ -15,7 +15,7 @@ class WelcomeImage extends StatelessWidget {
       children: [
         CustomText(
           text: "WELCOME",
-          textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
+          textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: defaultFontSize),
         ),
         SizedBox(height: defaultPadding * 2),
         Row(

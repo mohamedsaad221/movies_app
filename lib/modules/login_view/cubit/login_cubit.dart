@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../models/user_model.dart';
 import '../../../shared/network/local/db.dart';
+import '../../../shared/network/local/shared_pref.dart';
+import '../../../shared/widgets/components.dart';
+import '../../home/home_screen.dart';
 import 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -28,11 +31,13 @@ class LoginCubit extends Cubit<LoginState> {
     required String emailController,
     required String passwordController,
     required BuildContext context,
+    required bool mounted
   }) async {
     await LocalDB.instance.getLoginUser(
       email: emailController,
       passWord: passwordController,
       context: context,
+      mounted: mounted
     );
     emit(UserLoginStateSuccess());
   }
@@ -41,6 +46,8 @@ class LoginCubit extends Cubit<LoginState> {
     required String usernameController,
     required String emailController,
     required String passwordController,
+    required BuildContext context,
+    required bool mounted,
   }) async {
     await LocalDB.instance.saveUserData(
       userModel: UserModel(
@@ -49,6 +56,11 @@ class LoginCubit extends Cubit<LoginState> {
         password: passwordController,
       ),
     );
+    await CacheHelper.saveData(key: 'isLogin', value: true);
+    await CacheHelper.saveData(
+        key: 'email', value: emailController);
+    if (!mounted) return;
+    navigateAndFinish(context, const HomeScreen());
     emit(SignUpStateSuccess());
   }
 

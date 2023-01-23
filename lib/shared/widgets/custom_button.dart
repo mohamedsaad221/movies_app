@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../styles/app_colors.dart';
-import '../styles/font_styles.dart';
 import 'custom_text.dart';
 
 class CustomButton extends StatelessWidget {
@@ -53,7 +52,7 @@ class CustomButton extends StatelessWidget {
         onPressed: onPressed,
         child: CustomText(
           text: text,
-          textStyle: primaryTextStyle().copyWith(
+          textStyle: TextStyle(
             color: textColor,
             fontSize: fontSize,
           ),

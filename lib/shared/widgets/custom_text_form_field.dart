@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../helper/constance.dart';
 import '../styles/app_colors.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -81,7 +82,7 @@ class CustomTextFormField extends StatelessWidget {
             obscureText: isPassword,
             textDirection: TextDirection.ltr,
             style: TextStyle(
-              fontSize: 18.sp,
+              fontSize: defaultFontSize,
               color: Colors.black,
             ),
             decoration: InputDecoration(
@@ -98,7 +99,7 @@ class CustomTextFormField extends StatelessWidget {
               border: const OutlineInputBorder(),
               labelStyle: TextStyle(
                 color: Colors.black,
-                fontSize: 18.sp,
+                fontSize: defaultFontSize,
               ),
               hintTextDirection: TextDirection.ltr,
               //labelText: labelText,

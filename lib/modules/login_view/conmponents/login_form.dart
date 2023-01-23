@@ -9,12 +9,18 @@ import '../../../shared/helper/constance.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_form_field.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   LoginForm({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
   var formKey = GlobalKey<FormState>();
+
   var emailController = TextEditingController();
 
   var passwordController = TextEditingController();
@@ -72,10 +78,11 @@ class LoginForm extends StatelessWidget {
                       emailController: emailController.text,
                       passwordController: passwordController.text,
                       context: context,
+                      mounted: mounted
                     );
                   }
                 },
-                fontSize: 18.sp,
+                fontSize: defaultFontSize,
                 text: 'Login',
               ),
               SizedBox(height: defaultPadding),

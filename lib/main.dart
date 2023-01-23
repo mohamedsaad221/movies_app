@@ -26,6 +26,7 @@ void main() async {
   ApiRequest.init();
   await CacheHelper.init();
   await isLoggedIn();
+  await isWelcome();
 
   BlocOverrides.runZoned(
     () {

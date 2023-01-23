@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../helper/constance.dart';
 import 'app_colors.dart';
 
 class AppTheme {
@@ -53,7 +54,7 @@ class AppTheme {
       elevation: 20.0,
     ),
     textTheme: TextTheme(
-      button: TextStyle(fontSize: 18.sp),
+      button: TextStyle(fontSize: defaultFontSize),
       headline4: TextStyle(
         fontSize: 30.sp,
         fontWeight: FontWeight.bold,

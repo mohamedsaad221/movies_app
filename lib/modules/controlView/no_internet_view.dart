@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../shared/styles/font_styles.dart';
+import '../../shared/helper/constance.dart';
 import '../../shared/widgets/custom_text.dart';
 
 class NoInternet extends StatelessWidget {
@@ -23,13 +22,13 @@ class NoInternet extends StatelessWidget {
             ),
             CustomText(
               text: 'no_internet_connection',
-              textStyle: largeTitleTextStyle(),
+              textStyle: TextStyle(fontSize: defaultFontSize),
               softWrap: true,
               maxLine: 1,
             ),
             CustomText(
               text: 'no_internet_connection_description',
-              textStyle: primaryTextStyle().copyWith(fontSize: 20.sp),
+              textStyle: TextStyle(fontSize: defaultFontSize),
               softWrap: true,
               maxLine: 5,
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/modules/home/home_screen.dart';
+import 'package:movies_app/modules/login_view/login_screen.dart';
 
 import '../../shared/helper/constance.dart';
 import '../welcome/welcome_screen.dart';
@@ -16,8 +17,11 @@ class ControlView extends StatelessWidget {
         // TODO: implement listener
       },
       builder: (context, state) {
-        var controlCubit = ControlCubit.get(context);
-        return isLogin == null ? const WelcomeScreen() : const HomeScreen();
+        return isWelcomeBool == true
+            ? isLogin == true
+                ? const HomeScreen()
+                : const LoginScreen()
+            : const WelcomeScreen();
       },
     );
   }
